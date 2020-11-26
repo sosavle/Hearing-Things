@@ -12,7 +12,9 @@ ENTITY toplevel IS
           I2C_SDAT           			           	: INOUT STD_LOGIC;
 			 
 			 --finish the rest of the ports
-			 I2C_SCLK, AUD_DACDAT						: OUT	  STD_LOGIC       
+			 I2C_SCLK, AUD_DACDAT						: OUT	  STD_LOGIC;
+
+			 MODE												: IN	  STD_LOGIC
 	);
 END toplevel;
 
@@ -80,6 +82,7 @@ ARCHITECTURE Behavior OF toplevel IS
 	
 	signal ql: STD_LOGIC_VECTOR(23 DOWNTO 0);
 	signal qr:STD_LOGIC_VECTOR(23 DOWNTO 0);
+	
  
 BEGIN
 	reset <= NOT(KEY(0));
@@ -115,7 +118,11 @@ BEGIN
 				
 				-- Otherwise increment reads
 				else
-					readIndex <= readIndex + 2;
+					if mode = '1' then
+						readIndex <= readIndex + 1;
+					else
+						readIndex <= readIndex + 2;
+					end if;
 				end if;
 				
 				-- Make sure write indices do not go overboard
